@@ -80,26 +80,36 @@ const BoopImg = [
     "https://cdn.discordapp.com/attachments/270372438825500672/283016858402160640/515.gif",
     "https://cdn.discordapp.com/attachments/270372438825500672/283016859014397952/a02.gif"
 ]
-
+var reconnected = false
 /*
   A ping pong bot, whenever you send "ping", it replies "pong".
 */
 // the ready event is vital, it means that your bot will only start reacting to information
 // from Discord _after_ ready is emitted.
 bot.on('ready', () => {
-  console.log("Online~")
-  var timer = setInterval(()=>{bot.user.setGame(playingmsg[Math.floor(Math.random()*playingmsg.length)])},1000*60*60)
-  var guld = bot.guilds.first().defaultChannel
-  guld.sendMessage("I am now online~")
-  rl.on("line", input =>{
-    guld.sendMessage(input)
-})
+    console.log("Online~")
+    var timer = setInterval(() => { bot.user.setGame(playingmsg[Math.floor(Math.random() * playingmsg.length)]) }, 1000 * 60 * 60)
+
+    var guld = bot.guilds.first().defaultChannel
+    if (reconnected) {
+        guld.sendMessage("Reconnected after connection loss.")
+        reconnected = false
+    } else {
+        guld.sendMessage("I am now online~")
+    }
+    rl.on("line", input => {
+        guld.sendMessage(input)
+    })
 })
 
-bot.on("reconnecting", rcnct =>{
-rcnct.defaultChannel.sendMessage("Lost connection, reconnecting..")
-})
 
+bot.on("reconnecting", rcnct => {
+    reconnected = true
+    console.log("reconnecting")
+})
+bot.on("disconnect", () => {
+    console.log("Lost connection!")
+})
 
 
 
