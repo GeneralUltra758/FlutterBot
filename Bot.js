@@ -1,3 +1,4 @@
+//Discord bot
 const Discord = require('discord.js')
 const config = require('./config.js')
 const bot = new Discord.Client()
